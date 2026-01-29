@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Translator</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; }
+        .container { width: 100%; max-width: 500px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 130px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .controls { display: flex; gap: 10px; margin: 15px 0; align-items: center; }
+        button { cursor: pointer; border-radius: 8px; border: none; font-weight: bold; }
+        .swap-btn { background: #eee; padding: 10px; flex-shrink: 0; }
+        select { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .main-btn { width: 100%; padding: 15px; background: #002451; color: white; font-size: 18px; }
+        #result { margin-top: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; min-height: 100px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 style="text-align: center; color: #002451;">🌐 Smart Translator</h2>
+    <textarea id="inTxt" placeholder="내용을 입력하세요..."></textarea>
+    <div class="controls">
+        <button class="swap-btn" onclick="doSwap()">⇅ 내용 치환</button>
+        <select id="tLang">
+            <option value="KO">한국어</option>
+            <option value="EN">영어</option>
+            <option value="JA">일본어</option>
+        </select>
+    </div>
+    <button class="main-btn" onclick="doTrans()">번역 실행</button>
+    <div id="result">결과가 여기에 표시됩니다.</div>
+</div>
+
+<script>
+    // [주의] 여기에 :fx로 끝나는 본인 키를 넣으세요
+    const KEY = "a703cc7a-b212-4099-89f3-15938922f568:fx"; 
+
+    function doSwap() {
+        const i = document.getElementById('inTxt');
+        const r = document.getElementById('result');
+        const tmp = i.value;
+        i.value = (r.innerText === "결과가 여기에 표시됩니다." || r.innerText === "번역 중...") ? "" : r.innerText;
+        r.innerText = tmp || "결과가 여기에 표시됩니다.";
+    }
+
+    async function doTrans() {
+        const txt = document.getElementById('inTxt').value;
+        const target = document.getElementById('tLang').value;
+        const res = document.getElementById('result');
+        if(!txt.trim()) return;
+
+        res.innerText = "번역 중...";
+        try {
+            // CORS 에러 방지를 위해 auth_key를 본문에 포함
+            const response = await fetch("https://api-free.deepl.com/v2/translate", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ "auth_key": KEY, "text": txt, "target_lang": target })
+            });
+
+            const data = await response.json();
+            if(data.translations) {
+                res.innerText = data.translations[0].text;
+            } else {
+                throw new Error("인증 실패");
+            }
+        } catch (e) {
+            alert("오류: API 키가 정확한지 확인해 주세요.");
+            res.innerText = "에러 발생";
+        }
+    }
+</script>
+</body>
+</html>

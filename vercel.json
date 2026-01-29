@@ -1,0 +1,14 @@
+{
+  "version": 2
+}
+```
+- 위 코드를 메모장에 붙여넣기
+- `vercel.json` 이름으로 저장
+
+**파일 3: 폴더 구조**
+```
+deepl-translator/
+├── index.html
+├── vercel.json
+└── api/
+    └── translate.js
