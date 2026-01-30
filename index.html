@@ -360,11 +360,11 @@
             result.classList.remove('placeholder');
         }
 
-        // Swap languages (find matching base language codes)
+        // Swap languages
         const srcVal = src.value;
         const tgtVal = tgt.value;
 
-        // Map target lang codes to source lang codes
+        // Map between source and target lang codes (DeepL uses different codes)
         const tgtToSrc = {
             'EN-US': 'EN', 'EN-GB': 'EN',
             'ZH-HANS': 'ZH', 'ZH-HANT': 'ZH',
@@ -374,18 +374,19 @@
             'EN': 'EN-US', 'ZH': 'ZH-HANS', 'PT': 'PT-BR'
         };
 
-        if (srcVal !== 'AUTO') {
-            const newTgt = srcToTgt[srcVal] || srcVal;
-            const newSrc = tgtToSrc[tgtVal] || tgtVal;
+        // Convert target lang to source format
+        const newSrc = tgtToSrc[tgtVal] || tgtVal;
 
-            // Set source lang
-            for (const opt of src.options) {
-                if (opt.value === newSrc) { src.value = newSrc; break; }
-            }
-            // Set target lang
-            for (const opt of tgt.options) {
-                if (opt.value === newTgt) { tgt.value = newTgt; break; }
-            }
+        // Convert source lang to target format (AUTO인 경우 KO를 기본 타겟으로)
+        const newTgt = srcVal === 'AUTO' ? 'KO' : (srcToTgt[srcVal] || srcVal);
+
+        // Set source lang
+        for (const opt of src.options) {
+            if (opt.value === newSrc) { src.value = newSrc; break; }
+        }
+        // Set target lang
+        for (const opt of tgt.options) {
+            if (opt.value === newTgt) { tgt.value = newTgt; break; }
         }
 
         // Auto-translate after swap
