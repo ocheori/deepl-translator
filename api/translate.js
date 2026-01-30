@@ -22,23 +22,23 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: '필수 파라미터가 누락되었습니다.' });
         }
 
-        const deeplParams = new URLSearchParams({
-            auth_key: DEEPL_API_KEY,
-            text: text,
+        const bodyParams = {
+            text: [text],
             target_lang: target_lang
-        });
+        };
 
         // source_lang이 있고 AUTO가 아닌 경우에만 추가
         if (source_lang && source_lang !== 'AUTO') {
-            deeplParams.append('source_lang', source_lang);
+            bodyParams.source_lang = source_lang;
         }
 
         const response = await fetch('https://api-free.deepl.com/v2/translate', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+                'Content-Type': 'application/json',
             },
-            body: deeplParams
+            body: JSON.stringify(bodyParams)
         });
 
         const data = await response.json();
