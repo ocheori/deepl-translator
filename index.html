@@ -6,6 +6,7 @@
     <title>Smart Translator - DeepL</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0a1628 0%, #1a2940 50%, #0d1f3c 100%);
@@ -16,39 +17,201 @@
             padding: 20px;
             color: #333;
         }
-        .container { width: 100%; max-width: 640px; margin-top: 10px; }
-        .header { text-align: center; margin-bottom: 20px; color: white; }
-        .header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-        .header p { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
-        .card { background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
-        .lang-bar { display: flex; align-items: center; padding: 12px 16px; background: #f8f9fb; border-bottom: 1px solid #e8ecf1; gap: 8px; }
-        .lang-select { flex: 1; padding: 8px 12px; border: 1px solid #dde1e6; border-radius: 8px; font-size: 14px; background: white; color: #333; cursor: pointer; appearance: auto; }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            margin-top: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .header p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Language selector bar */
+        .lang-bar {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f8f9fb;
+            border-bottom: 1px solid #e8ecf1;
+            gap: 8px;
+        }
+        .lang-select {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #dde1e6;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            appearance: auto;
+        }
         .lang-select:focus { outline: none; border-color: #3b82f6; }
-        .swap-btn { width: 40px; height: 40px; border: none; background: #e8ecf1; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+
+        .swap-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #e8ecf1;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
         .swap-btn:hover { background: #d0d5dd; transform: rotate(180deg); }
         .swap-btn:active { transform: rotate(180deg) scale(0.95); }
-        .text-section { position: relative; padding: 16px; }
-        .text-section + .text-section { border-top: 1px solid #e8ecf1; background: #f8fafe; }
-        .text-section label { display: block; font-size: 11px; font-weight: 600; color: #8b95a5; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-        textarea { width: 100%; min-height: 140px; border: none; font-size: 16px; line-height: 1.6; resize: vertical; color: #1a1a2e; background: transparent; font-family: inherit; }
+
+        /* Text areas */
+        .text-section {
+            position: relative;
+            padding: 16px;
+        }
+        .text-section + .text-section {
+            border-top: 1px solid #e8ecf1;
+            background: #f8fafe;
+        }
+
+        .text-section label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #8b95a5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 140px;
+            border: none;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: vertical;
+            color: #1a1a2e;
+            background: transparent;
+            font-family: inherit;
+        }
         textarea:focus { outline: none; }
         textarea::placeholder { color: #b0b8c4; }
-        .result-text { min-height: 140px; font-size: 16px; line-height: 1.6; color: #1a1a2e; white-space: pre-wrap; word-break: break-word; }
-        .result-text.placeholder { color: #b0b8c4; }
-        .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; }
-        .char-count { font-size: 12px; color: #8b95a5; }
-        .tool-btns { display: flex; gap: 4px; }
-        .tool-btn { padding: 6px 10px; border: none; background: transparent; cursor: pointer; font-size: 13px; color: #6b7280; border-radius: 6px; transition: background 0.15s; }
+
+        .result-text {
+            min-height: 140px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1a1a2e;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .result-text.placeholder {
+            color: #b0b8c4;
+        }
+
+        /* Bottom toolbar */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+        }
+        .char-count {
+            font-size: 12px;
+            color: #8b95a5;
+        }
+        .tool-btns {
+            display: flex;
+            gap: 4px;
+        }
+        .tool-btn {
+            padding: 6px 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: #6b7280;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
         .tool-btn:hover { background: #f0f2f5; color: #333; }
-        .translate-btn { display: block; width: calc(100% - 32px); margin: 0 16px 16px; padding: 14px; background: linear-gradient(135deg, #002451, #0d3b7a); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; }
+
+        /* Translate button */
+        .translate-btn {
+            display: block;
+            width: calc(100% - 32px);
+            margin: 0 16px 16px;
+            padding: 14px;
+            background: linear-gradient(135deg, #002451, #0d3b7a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
         .translate-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,36,81,0.4); }
         .translate-btn:active { transform: translateY(0); }
         .translate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Loading spinner */
         .loading { display: inline-block; }
-        .loading::after { content: ''; display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(26,26,46,0.2); border-top-color: #1a1a2e; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-left: 8px; }
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(26,26,46,0.2);
+            border-top-color: #1a1a2e;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1a1a2e; color: white; padding: 10px 20px; border-radius: 8px; font-size: 14px; transition: transform 0.3s ease; z-index: 1000; }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1a1a2e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
         .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Responsive */
         @media (max-width: 480px) {
             body { padding: 10px; }
             .container { margin-top: 5px; }
@@ -56,16 +219,26 @@
             textarea, .result-text { min-height: 120px; font-size: 15px; }
             .translate-btn { font-size: 15px; padding: 13px; }
         }
-        .shortcut-hint { text-align: center; padding: 10px; font-size: 12px; color: rgba(255,255,255,0.3); }
+
+        /* Keyboard shortcut hint */
+        .shortcut-hint {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
+
 <div class="container">
     <div class="header">
         <h1>Smart Translator</h1>
         <p>DeepL API Powered</p>
     </div>
+
     <div class="card">
+        <!-- Language selector -->
         <div class="lang-bar">
             <select id="srcLang" class="lang-select">
                 <option value="AUTO">자동 감지</option>
@@ -82,7 +255,9 @@
                 <option value="NL">Nederlands</option>
                 <option value="PL">Polski</option>
             </select>
+
             <button class="swap-btn" onclick="doSwap()" title="언어 및 내용 교환">⇄</button>
+
             <select id="tgtLang" class="lang-select">
                 <option value="KO">한국어</option>
                 <option value="EN-US">English (US)</option>
@@ -101,6 +276,8 @@
                 <option value="PL">Polski</option>
             </select>
         </div>
+
+        <!-- Input section -->
         <div class="text-section">
             <label>원문</label>
             <textarea id="inTxt" placeholder="번역할 텍스트를 입력하세요..."></textarea>
@@ -111,6 +288,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Result section -->
         <div class="text-section">
             <label>번역 결과</label>
             <div class="result-text placeholder" id="result">번역 결과가 여기에 표시됩니다.</div>
@@ -121,64 +300,180 @@
                 </div>
             </div>
         </div>
+
+        <!-- Translate button -->
         <button class="translate-btn" id="transBtn" onclick="doTrans()">번역하기</button>
     </div>
-    <div class="shortcut-hint">Ctrl + Enter로 빠른 번역</div>
+
+    <div class="shortcut-hint">입력 시 자동 번역 | 치환 버튼으로 원문/결과 교환</div>
 </div>
+
 <div class="toast" id="toast"></div>
+
 <script>
     const API_URL = '/api/translate';
+
+    // Character count + auto-translate
     const inTxt = document.getElementById('inTxt');
     const charCount = document.getElementById('charCount');
-    inTxt.addEventListener('input', () => { charCount.textContent = inTxt.value.length + '자'; });
-    inTxt.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doTrans(); } });
+    let debounceTimer = null;
+
+    inTxt.addEventListener('input', () => {
+        charCount.textContent = inTxt.value.length + '자';
+
+        // Auto-translate with debounce (500ms after last keystroke)
+        clearTimeout(debounceTimer);
+        if (inTxt.value.trim()) {
+            debounceTimer = setTimeout(() => doTrans(), 500);
+        } else {
+            const result = document.getElementById('result');
+            result.innerText = '번역 결과가 여기에 표시됩니다.';
+            result.classList.add('placeholder');
+        }
+    });
+
+    // Language change also triggers auto-translate
+    document.getElementById('srcLang').addEventListener('change', () => {
+        if (inTxt.value.trim()) doTrans();
+    });
+    document.getElementById('tgtLang').addEventListener('change', () => {
+        if (inTxt.value.trim()) doTrans();
+    });
+
+    // Swap languages and content
     function doSwap() {
-        const src = document.getElementById('srcLang'), tgt = document.getElementById('tgtLang');
-        const input = document.getElementById('inTxt'), result = document.getElementById('result');
+        const src = document.getElementById('srcLang');
+        const tgt = document.getElementById('tgtLang');
+        const input = document.getElementById('inTxt');
+        const result = document.getElementById('result');
+
+        // Swap text content
         const resultText = result.classList.contains('placeholder') ? '' : result.innerText;
         const inputText = input.value;
-        if (resultText) { input.value = resultText; charCount.textContent = resultText.length + '자'; }
-        if (inputText) { result.innerText = inputText; result.classList.remove('placeholder'); }
-        const srcVal = src.value, tgtVal = tgt.value;
-        const tgtToSrc = { 'EN-US': 'EN', 'EN-GB': 'EN', 'ZH-HANS': 'ZH', 'ZH-HANT': 'ZH', 'PT-BR': 'PT', 'PT-PT': 'PT' };
-        const srcToTgt = { 'EN': 'EN-US', 'ZH': 'ZH-HANS', 'PT': 'PT-BR' };
-        if (srcVal !== 'AUTO') {
-            const newTgt = srcToTgt[srcVal] || srcVal, newSrc = tgtToSrc[tgtVal] || tgtVal;
-            for (const opt of src.options) { if (opt.value === newSrc) { src.value = newSrc; break; } }
-            for (const opt of tgt.options) { if (opt.value === newTgt) { tgt.value = newTgt; break; } }
+
+        if (resultText) {
+            input.value = resultText;
+            charCount.textContent = resultText.length + '자';
         }
+        if (inputText) {
+            result.innerText = inputText;
+            result.classList.remove('placeholder');
+        }
+
+        // Swap languages
+        const srcVal = src.value;
+        const tgtVal = tgt.value;
+
+        // Map between source and target lang codes (DeepL uses different codes)
+        const tgtToSrc = {
+            'EN-US': 'EN', 'EN-GB': 'EN',
+            'ZH-HANS': 'ZH', 'ZH-HANT': 'ZH',
+            'PT-BR': 'PT', 'PT-PT': 'PT'
+        };
+        const srcToTgt = {
+            'EN': 'EN-US', 'ZH': 'ZH-HANS', 'PT': 'PT-BR'
+        };
+
+        // Convert target lang to source format
+        const newSrc = tgtToSrc[tgtVal] || tgtVal;
+
+        // Convert source lang to target format (AUTO인 경우 KO를 기본 타겟으로)
+        const newTgt = srcVal === 'AUTO' ? 'KO' : (srcToTgt[srcVal] || srcVal);
+
+        // Set source lang
+        for (const opt of src.options) {
+            if (opt.value === newSrc) { src.value = newSrc; break; }
+        }
+        // Set target lang
+        for (const opt of tgt.options) {
+            if (opt.value === newTgt) { tgt.value = newTgt; break; }
+        }
+
+        // Auto-translate after swap
+        if (input.value.trim()) doTrans();
     }
+
+    // Translate
     async function doTrans() {
         const text = inTxt.value.trim();
         if (!text) return;
-        const btn = document.getElementById('transBtn'), result = document.getElementById('result');
-        const srcLang = document.getElementById('srcLang').value, tgtLang = document.getElementById('tgtLang').value;
-        btn.disabled = true; btn.textContent = '번역 중...';
+
+        const btn = document.getElementById('transBtn');
+        const result = document.getElementById('result');
+        const srcLang = document.getElementById('srcLang').value;
+        const tgtLang = document.getElementById('tgtLang').value;
+
+        btn.disabled = true;
+        btn.textContent = '번역 중...';
         result.classList.remove('placeholder');
         result.innerHTML = '<span class="loading">번역 중</span>';
+
         try {
-            const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, source_lang: srcLang, target_lang: tgtLang }) });
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: text,
+                    source_lang: srcLang,
+                    target_lang: tgtLang
+                })
+            });
+
             const data = await response.json();
-            if (!response.ok) throw new Error(data.error || '번역 요청 실패');
+
+            if (!response.ok) {
+                throw new Error(data.error || '번역 요청 실패');
+            }
+
             result.innerText = data.translatedText;
             result.classList.remove('placeholder');
+
         } catch (e) {
-            result.innerText = '오류: ' + e.message;
+            result.innerText = '오류가 발생했습니다: ' + e.message;
             result.classList.remove('placeholder');
             showToast('번역 실패 - 다시 시도해주세요');
-        } finally { btn.disabled = false; btn.textContent = '번역하기'; }
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '번역하기';
+        }
     }
-    function clearInput() { inTxt.value = ''; charCount.textContent = '0자'; inTxt.focus(); }
+
+    // Clear input
+    function clearInput() {
+        inTxt.value = '';
+        charCount.textContent = '0자';
+        inTxt.focus();
+    }
+
+    // Copy result
     function copyResult() {
         const result = document.getElementById('result');
         if (result.classList.contains('placeholder')) return;
+
         const text = result.innerText;
         if (!text) return;
-        navigator.clipboard.writeText(text).then(() => showToast('복사되었습니다')).catch(() => {
-            const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('복사되었습니다');
+
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('복사되었습니다');
+        }).catch(() => {
+            // Fallback for older browsers
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('복사되었습니다');
         });
     }
-    function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
+
+    // Toast notification
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
 </script>
 </body>
 </html>
