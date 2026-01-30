@@ -305,7 +305,7 @@
         <button class="translate-btn" id="transBtn" onclick="doTrans()">번역하기</button>
     </div>
 
-    <div class="shortcut-hint">Ctrl + Enter로 빠른 번역</div>
+    <div class="shortcut-hint">입력 시 자동 번역 | 치환 버튼으로 원문/결과 교환</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -313,19 +313,31 @@
 <script>
     const API_URL = '/api/translate';
 
-    // Character count
+    // Character count + auto-translate
     const inTxt = document.getElementById('inTxt');
     const charCount = document.getElementById('charCount');
+    let debounceTimer = null;
+
     inTxt.addEventListener('input', () => {
         charCount.textContent = inTxt.value.length + '자';
+
+        // Auto-translate with debounce (500ms after last keystroke)
+        clearTimeout(debounceTimer);
+        if (inTxt.value.trim()) {
+            debounceTimer = setTimeout(() => doTrans(), 500);
+        } else {
+            const result = document.getElementById('result');
+            result.innerText = '번역 결과가 여기에 표시됩니다.';
+            result.classList.add('placeholder');
+        }
     });
 
-    // Keyboard shortcut: Ctrl+Enter to translate
-    inTxt.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            e.preventDefault();
-            doTrans();
-        }
+    // Language change also triggers auto-translate
+    document.getElementById('srcLang').addEventListener('change', () => {
+        if (inTxt.value.trim()) doTrans();
+    });
+    document.getElementById('tgtLang').addEventListener('change', () => {
+        if (inTxt.value.trim()) doTrans();
     });
 
     // Swap languages and content
@@ -375,6 +387,9 @@
                 if (opt.value === newTgt) { tgt.value = newTgt; break; }
             }
         }
+
+        // Auto-translate after swap
+        if (input.value.trim()) doTrans();
     }
 
     // Translate
