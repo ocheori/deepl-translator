@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+    // CORS 설정
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -11,6 +12,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    // 환경변수에서 API 키 읽기, 없으면 기본값 사용
     const DEEPL_API_KEY = process.env.DEEPL_API_KEY || 'a703cc7a-b212-4099-89f3-15938922f568:fx';
 
     try {
@@ -25,6 +27,7 @@ export default async function handler(req, res) {
             target_lang: target_lang
         };
 
+        // source_lang이 있고 AUTO가 아닌 경우에만 추가
         if (source_lang && source_lang !== 'AUTO') {
             bodyParams.source_lang = source_lang;
         }
