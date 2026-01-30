@@ -12,14 +12,8 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // 환경변수에서 API 키 읽기 (Vercel 대시보드에서 DEEPL_API_KEY 설정)
-    const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
-
-    if (!DEEPL_API_KEY) {
-        return res.status(500).json({
-            error: 'DeepL API 키가 설정되지 않았습니다. Vercel 환경변수에 DEEPL_API_KEY를 추가하세요.'
-        });
-    }
+    // 환경변수에서 API 키 읽기, 없으면 기본값 사용
+    const DEEPL_API_KEY = process.env.DEEPL_API_KEY || 'a703cc7a-b212-4099-89f3-15938922f568:fx';
 
     try {
         const { text, source_lang, target_lang } = req.body;
